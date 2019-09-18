@@ -50,6 +50,21 @@ UDPSession::DialWithOptions(const char *ip, uint16_t port, size_t dataShards, si
     return sess;
 };
 
+UDPSession *
+UDPSession::CreateSessionWithOptions(int fd, size_t dataShards, size_t parityShards) {
+    auto sess = UDPSession::createSession(fd);
+    if (sess == nullptr) {
+        return nullptr;
+    }
+
+    if (dataShards > 0 && parityShards > 0) {
+        sess->fec = FEC::New(3 * (dataShards + parityShards), dataShards, parityShards);
+        sess->shards.resize(dataShards + parityShards, nullptr);
+        sess->dataShards = dataShards;
+        sess->parityShards = parityShards;
+    }
+    return sess;
+};
 
 UDPSession *
 UDPSession::dialIPv6(const char *ip, uint16_t port) {
