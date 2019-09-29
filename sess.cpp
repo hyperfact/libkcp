@@ -106,6 +106,10 @@ UDPSession::createSession(int sockfd) {
     return sess;
 }
 
+uint32_t
+UDPSession::Check(uint32_t current) noexcept {
+    return ikcp_check(m_kcp, current);
+}
 
 void
 UDPSession::Update(uint32_t current) noexcept {
@@ -161,6 +165,12 @@ UDPSession::Destroy(UDPSession *sess) {
     if (0 != sess->m_sockfd) { close(sess->m_sockfd); }
     if (nullptr != sess->m_kcp) { ikcp_release(sess->m_kcp); }
     delete sess;
+}
+
+ssize_t
+UDPSession::GetReadMax() noexcept {
+    int psz = ikcp_peeksize(m_kcp);
+    return (psz>=0) ? (psz+m_streambufsiz) : m_streambufsiz;
 }
 
 ssize_t

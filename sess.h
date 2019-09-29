@@ -32,6 +32,8 @@ public:
 
     static UDPSession *CreateSessionWithOptions(int fd, size_t dataShards, size_t parityShards);
 
+    uint32_t Check(uint32_t current) noexcept;
+
     // Update will try reading/writing udp packet, pass current unix millisecond
     void Update(uint32_t current) noexcept;
 
@@ -40,6 +42,8 @@ public:
 
     // Read reads from kcp with buffer empty sz.
     ssize_t Read(char *buf, size_t sz) noexcept;
+
+    ssize_t GetReadMax() noexcept;
 
     // Write writes into kcp with buffer empty sz.
     ssize_t Write(const char *buf, size_t sz) noexcept;
